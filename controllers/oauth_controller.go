@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"mockAuth/utils"
 )
+const userId0 = "123456"
+const userId1 = "234567"
 
 type OAuthController struct{}
 
@@ -22,13 +24,13 @@ func (o *OAuthController) Auth(c *gin.Context) {
 	// }
 	
 	// url := redirectURI + "?state=" + state + "&code=" + user.ObjectID
-	url := redirectURI + "?state=" + state + "&code=123456"
+	url := redirectURI + "?state=" + state + "&code=" + userId0
 	log.Println(url)
 	c.Redirect(http.StatusFound, url)
 }
 
 func (o *OAuthController) Token(c *gin.Context) {
-	code := c.DefaultQuery("code", "123456")
+	code := c.DefaultQuery("code", userId0)
 	if code == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "code is required"})
 		return
@@ -61,6 +63,7 @@ func (o *OAuthController) UserInfo(c *gin.Context) {
 
 	nickName := user.NickName // 请替换成正确的用户属性
 	email := user.Username + "@test" // 需要是电子邮箱格式
+	roles := user.Roles
 
-	c.JSON(http.StatusOK, gin.H{"email": email, "name": nickName})
+	c.JSON(http.StatusOK, gin.H{"email": email, "name": nickName, "role": roles})
 }
